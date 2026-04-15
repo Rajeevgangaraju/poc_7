@@ -1,6 +1,18 @@
 - hosts: web
   become: yes
   tasks:
+
+    - name: Ensure application directory exists
+      file:
+        path: /opt/poc_app
+        state: directory
+
+    - name: Clone application repository
+      git:
+        repo: https://github.com/Rajeevgangaraju/poc_7.git
+        dest: /opt/poc_app
+        force: yes
+
     - name: Stop old container
       shell: docker stop poc-container || true
 
@@ -12,6 +24,9 @@
 
     - name: Build Docker image
       shell: docker build -t poc-image .
+      args:
+        chdir: /opt/poc_app
 
     - name: Run container
       shell: docker run -d -p 80:80 --name poc-container poc-image
+      
