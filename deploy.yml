@@ -1,0 +1,17 @@
+- hosts: web
+  become: yes
+  tasks:
+    - name: Stop old container
+      shell: docker stop poc-container || true
+
+    - name: Remove old container
+      shell: docker rm poc-container || true
+
+    - name: Remove old image
+      shell: docker rmi poc-image || true
+
+    - name: Build Docker image
+      shell: docker build -t poc-image .
+
+    - name: Run container
+      shell: docker run -d -p 80:80 --name poc-container poc-image
