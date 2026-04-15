@@ -3,12 +3,19 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git url: 'https://github.com/Rajeevgangaraju/poc_7.git', branch: 'main'
+                git branch: 'main',
+                    url: 'https://github.com/Rajeevgangaraju/poc_7.git'
             }
         }
+
         stage('Deploy Application') {
             steps {
-                sh 'ansible-playbook -i inventory.ini --private-key dockerrpoc7.pem deploy.yml'
+                sh '''
+                ansible-playbook \
+                -i inventory.ini \
+                --private-key /var/lib/jenkins/.ssh/dockerrpoc7.pem \
+                deploy.yml
+                '''
             }
         }
     }
